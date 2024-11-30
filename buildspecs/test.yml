@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20.x
+  build:
+    commands:
+      - echo test started on `date`
+      - npm run test
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no
