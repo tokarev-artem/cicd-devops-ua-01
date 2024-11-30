@@ -1,0 +1,16 @@
+version: 0.2
+
+env:
+  variables:
+    FUNCTION_NAME: "cicd-demo"
+    ZIP_FILE: lambda.zip
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20.x
+    commands:
+
+  build:
+    commands:
+      - aws lambda invoke --function-name ${FUNCTION_NAME} --cli-binary-format raw-in-base64-out  --payload '{ "key": "value" }' response.json
