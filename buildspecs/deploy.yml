@@ -12,6 +12,8 @@ phases:
     commands:
       - echo "Install extra packages"
       - yum install zip -y
+      - echo ${FUNCTION_NAME}
+      - echo ${ZIP_FILE}
   pre_build:
     commands:
 
@@ -21,5 +23,5 @@ phases:
       - zip -r $ZIP_FILE .
       - echo "Deploying lambda function"
       - aws lambda update-function-code \
-        --function-name  $FUNCTION_NAME \
-        --zip-file fileb://$ZIP_FILE
+        --function-name  ${FUNCTION_NAME} \
+        --zip-file fileb://${ZIP_FILE}
