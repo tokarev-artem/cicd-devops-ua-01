@@ -1,0 +1,35 @@
+version: 0.2
+
+env:
+  variables:
+    FUNCTION_NAME: "cicd-demo"
+    ZIP_FILE: lambda.zip
+  parameter-store:
+    CHAT_ID: chat_id
+    BOT_TOKEN: bot_token
+
+phases:
+  build:
+    commands:
+      - aws lambda invoke --function-name $FUNCTION_NAME --cli-binary-format raw-in-base64-out --payload '{"key":"value"}' response.json
+    finally:
+      - |
+        WEBHOOK_URL="https://api.telegram.org/bot${BOT_TOKEN}/sendMessage"
+        STATUS="Success" 
+
+        if [ "$CODEBUILD_BUILD_SUCCEEDING" -ne 1 ]; then 
+          STATUS="Failed" 
+        fi
+
+        PAYLOAD=$(cat <<EOF
+        {
+          "chat_id": "${CHAT_ID}",
+          "text": "Build ${CODEBUILD_BUILD_ID} status: ${STATUS}"
+        }
+        EOF
+        )
+
+        echo "${PAYLOAD}"
+        echo "${STATUS}"
+
+        curl -XPOST -H "Content-Type: application/json" -d "${PAYLOAD}" "${WEBHOOK_URL}"

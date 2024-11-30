@@ -1,0 +1,23 @@
+version: 0.2
+
+env:
+  variables:
+    FUNCTION_NAME: "cicd-demo"
+    ZIP_FILE: lambda.zip
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20.x
+    commands:
+      - echo "Install extra packages"
+      - echo "aws lambda update-function-code --function-name ${FUNCTION_NAME} --zip-file fileb://${ZIP_FILE}"
+      - yum install zip -y
+      - echo ${FUNCTION_NAME}
+      - echo ${ZIP_FILE}
+  build:
+    commands:
+      - echo preparing zip archive
+      - zip -r $ZIP_FILE . -x buildspecs -x .gitignore
+      - echo "Deploying lambda function"
+      - aws lambda update-function-code --function-name ${FUNCTION_NAME} --zip-file fileb://${ZIP_FILE}
