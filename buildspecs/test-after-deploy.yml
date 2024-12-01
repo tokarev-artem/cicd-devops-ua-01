@@ -23,8 +23,8 @@ phases:
 
         PAYLOAD=$(cat <<EOF
         {
-          "status": "$STATUS",
-          "build_id": "$CODEBUILD_BUILD_ID"
+          "chat_id": "${CHAT_ID}",
+          "text": "Build ${CODEBUILD_BUILD_ID} status: ${STATUS}"
         }
         EOF
         )
@@ -32,4 +32,4 @@ phases:
         echo "${PAYLOAD}"
         echo "${STATUS}"
 
-        curl -XPOST -H "Content-Type: application/json" -d "${PAYLOAD}" -d "chat_id=${CHAT_ID}" "${WEBHOOK_URL}"
+        curl -XPOST -H "Content-Type: application/json" -d "${PAYLOAD}" "${WEBHOOK_URL}"
