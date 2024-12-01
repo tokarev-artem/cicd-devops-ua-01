@@ -24,7 +24,8 @@ phases:
           "status": "$STATUS", 
           "build_id": "$CODEBUILD_BUILD_ID" 
         } 
-        EOF ) 
+        EOF 
+        ) 
         echo ${PAYLOAD}
         echo ${STATUS}
         curl -XPOST -H "Content-Type: application/json" -d "${PAYLOAD}" -d chat_id=${CHAT_ID} "${WEBHOOK_URL}"
