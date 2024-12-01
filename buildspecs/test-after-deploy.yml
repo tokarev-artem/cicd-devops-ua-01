@@ -9,8 +9,20 @@ phases:
   install:
     runtime-versions:
       nodejs: 20.x
-    commands:
-
   build:
     commands:
       - aws lambda invoke --function-name ${FUNCTION_NAME} --cli-binary-format raw-in-base64-out  --payload '{ "key": "value" }' response.json
+    finally: 
+      - | 
+        STATUS="Success"
+        if ["$CODEBUILD_BUILD_SUCCEEDING" -ne 1]; then
+          STATUS="Failed"
+        fi
+        PAYLOAD=$(cat <<EOF
+        {
+          "status": "$STATUS",
+          "build_id": "$CODEBUILD_BUILD_ID"
+        }
+        EOF
+        )
+        # curl -XPOST -H "Content-Type: application/json" -d "$PAYLOAD" "WEBHOOK_URL"
